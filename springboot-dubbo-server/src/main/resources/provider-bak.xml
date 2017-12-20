@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo
+http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+
+    <!--参考文档：https://www.cnblogs.com/zdd-java/archive/2017/03/17/dubbo2.html-->
+
+
+    <!-- 应用配置，服务提供方和消费方都有-->
+    <dubbo:application name="DubboWithSpringBoot-Server-provider"/>
+
+    <!-- 注册中心配置，使用zookeeper注册中心暴露服务地址 -->
+    <dubbo:registry address="zookeeper://10.165.124.69:2181" timeout="60000" group="dubbo-test"/>
+
+    <!-- 协议配置，由服务提供方指定，消费方被动接受。这里指定在20889端口暴露服务，默认端口在20880-->
+    <dubbo:protocol name="dubbo" port="20889"/>
+
+    <!--使用注解方式暴露接口，会自动扫描package下所有包中dubbo相关的注解，这样就不用在xml中再针对每个服务接口配置dubbo:service interface-->
+    <dubbo:annotation package="com.practice.springboot.dubbo.server"/>
+
+
+<!--使用xml配置启动dubbo服务-->
+
+    <!-- 第二种方式，ItemServiceImpl-->
+<!--等同于在类上打@service注解，打了注解就必须要用annotation指定启动扫描路径
+使用这种方式，就不需要指定annotation-->
+    <!--#通过group指定注册中心分组-->
+
+
+    <!-- 下面是针对单个服务接口进行配置-->
+    <!-- 服务配置，申明暴露一个接口服务-->
+    <dubbo:service interface="com.practice.springboot.dubbo.server.ItemService" ref="itemService" group="dubbo-test"/>
+    <!-- 具体的实现bean-->
+    <bean id="itemService" class="com.practice.springboot.dubbo.server.ItemServiceImpl" />
+
+
+    <!-- dubbo对外暴露的是接口-->
+    <!-- ref是spring bean的名字，1、要在类上打spring @Service 的注解   2、或者在xml中配置上面的一个bean
+        spring 2中配置方式-->
+
+    <!--spring 创建bean：一种是扫描代码，一种是扫描xml文件-->
+
+</beans>
